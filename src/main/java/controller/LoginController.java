@@ -22,6 +22,34 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 登录
+     * <p>
+     * 接口：
+     * /loginCheck.json
+     * 入参：
+     * inputName                |String|N|用户名
+     * inputPassword            |String|N|密码
+     * 出参：
+     * respCode                 |String|N|返回码
+     * respMsg                  |String|N|返回消息
+     * <p>
+     * 样例：
+     * #1
+     * {
+     * "respCode":"1000",
+     * "respMsg":"loginSuccess"
+     * }
+     * #2
+     * {
+     * "respCode":"1001",
+     * "respMsg":"loginFail"
+     * }
+     *
+     * @param inputName
+     * @param inputPassword
+     * @return JsonString
+     */
     @RequestMapping("/loginCheck.json")
     @ResponseBody
     @LogFunction
@@ -39,6 +67,31 @@ public class LoginController {
         return JSON.toJSONString(returnMap);
     }
 
+    /**
+     * 登出
+     * <p>
+     * 接口：
+     * /logout.json
+     * 入参：
+     * 无
+     * 出参：
+     * respCode                 |String|N|返回码
+     * respMsg                  |String|N|返回消息
+     * <p>
+     * 样例：
+     * #1
+     * {
+     * "respCode":"1000",
+     * "respMsg":"logoutSuccess"
+     * }
+     * #2
+     * {
+     * "respCode":"1001",
+     * "respMsg":"logoutFail"
+     * }
+     *
+     * @return JsonString
+     */
     @RequestMapping("/logout.json")
     @ResponseBody
     @LogFunction

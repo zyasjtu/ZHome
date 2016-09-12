@@ -20,11 +20,11 @@ public class MessageService {
     @Autowired
     private MessageDao messageDao;
 
-    public Map<String,Object> getAllMessages() {
+    public Map<String, Object> getMessages(Integer pageNo, Integer pageSize) {
         Map<String,Object> returnMap = new HashMap<String, Object>();
-        List<Message> messages = messageDao.findMessage();
+        List<Message> messages = messageDao.findMessage(pageNo, pageSize);
         returnMap.put("respCode", "1000");
-        returnMap.put("respMsg", "findMessageSuccess");
+        returnMap.put("respMsg", "getMessageSuccess");
         returnMap.put("messages", messages);
 
         return returnMap;
