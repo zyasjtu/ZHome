@@ -4,6 +4,7 @@ CREATE TABLE zhome_db.ZHome_User
     name NVARCHAR(64) NOT NULL,
     password NVARCHAR(64) NOT NULL
 );
+CREATE UNIQUE INDEX zhome_user_name_uindex ON zhome_db.zhome_user (name);
 
 CREATE TABLE zhome_db.ZHome_Message
 (

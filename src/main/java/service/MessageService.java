@@ -21,7 +21,7 @@ public class MessageService {
     private MessageDao messageDao;
 
     public Map<String, Object> getMessages(Integer pageNo, Integer pageSize) {
-        Map<String,Object> returnMap = new HashMap<String, Object>();
+        Map<String, Object> returnMap = new HashMap<String, Object>();
         List<Message> messages = messageDao.findMessage(pageNo, pageSize);
         returnMap.put("respCode", "1000");
         returnMap.put("respMsg", "getMessageSuccess");
@@ -30,7 +30,7 @@ public class MessageService {
         return returnMap;
     }
 
-    public Map<String,Object> addMessage(HttpServletRequest request, String text, String imageUrl) {
+    public Map<String, Object> addMessage(HttpServletRequest request, String text, String imageUrl) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
         User user = (User) request.getSession().getAttribute("loginUser");
 

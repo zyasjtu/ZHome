@@ -73,12 +73,14 @@ public class MessageController {
     @ResponseBody
     public String getMessages(@RequestParam Integer pageNo, @RequestParam Integer pageSize) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
+
         if (pageNo < 1 || pageSize < 1) {
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "invalidParameter");
         } else {
             returnMap = messageService.getMessages(pageNo, pageSize);
         }
+
         return JSON.toJSONStringWithDateFormat(returnMap, "yyyy-MM-dd HH:mm:ss.SSS");
     }
 
@@ -114,6 +116,7 @@ public class MessageController {
     @ResponseBody
     public String addMessage(HttpServletRequest request, @RequestParam String text, String imageUrl) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
+
         if (StringUtils.isEmpty(text)) {
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "invalidParameter");

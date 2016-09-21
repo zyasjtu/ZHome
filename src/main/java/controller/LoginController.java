@@ -57,6 +57,7 @@ public class LoginController {
                              @RequestParam String inputName,
                              @RequestParam String inputPassword) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
+
         if (StringUtils.isEmpty(inputName) || StringUtils.isEmpty(inputPassword)) {
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "invalidParameter");
@@ -97,10 +98,12 @@ public class LoginController {
     @LogFunction
     public String logout(HttpServletRequest request) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
+
         request.getSession().setAttribute("loginUser", null);
         returnMap.put("respCode", "1000");
-        returnMap.put("respMsg", "logoutSuccess");
-        return JSON.toJSONString(returnMap);
+        returnMap.put("respMsg", "成功");
+
+        return JSON.toJSONString(returnMap);//.getBytes("UTF-8"),"iso8859-1");
     }
 
 }

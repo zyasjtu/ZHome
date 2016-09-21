@@ -35,7 +35,7 @@ public class UserDaoTest {
     @Test
     public void addUser() throws Exception {
         User user = new User();
-        user.setName("Colin");
+        user.setName("Sharon");
         user.setPassword("a");
         userDao.addUser(user);
     }
