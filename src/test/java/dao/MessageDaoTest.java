@@ -1,8 +1,6 @@
 package dao;
 
 import model.Message;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +22,12 @@ public class MessageDaoTest {
     @Autowired
     private MessageDao messageDao;
 
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
     public void addMessage() throws Exception {
         Message message = new Message();
         message.setCreator("Colin");
-        message.setCreateIp("99.48.24.36");
+        message.setCreatorIp("127.0.0.1");
         message.setCreateTime(new Date());
-        message.setUpdateTime(new Date());
         message.setText("This is a message");
         message.setImageUrl("image.jpg");
         messageDao.addMessage(message);

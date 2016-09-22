@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  * Created by zya on 2016/9/8.
  */
@@ -35,8 +37,10 @@ public class UserDaoTest {
     @Test
     public void addUser() throws Exception {
         User user = new User();
-        user.setName("Sharon");
+        user.setName("Colin");
         user.setPassword("a");
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
         userDao.addUser(user);
     }
 
@@ -47,7 +51,7 @@ public class UserDaoTest {
 
     @Test
     public void updateUser() throws Exception {
-
+        userDao.updateUser("Colin", "a");
     }
 
     @Test

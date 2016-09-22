@@ -101,7 +101,7 @@ public class LoginController {
 
         request.getSession().setAttribute("loginUser", null);
         returnMap.put("respCode", "1000");
-        returnMap.put("respMsg", "成功");
+        returnMap.put("respMsg", "logoutSuccess");
 
         return JSON.toJSONString(returnMap);//.getBytes("UTF-8"),"iso8859-1");
     }

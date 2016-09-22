@@ -4,17 +4,18 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Created by zya on 2016/9/9.
+ * Created by zya on 2016/9/22.
  */
 @Entity
-@Table(name = "ZHome_Message")
-public class Message {
+@Table(name = "ZHome_Comment")
+public class Comment {
     private Long id;
     private String creator;
     private String creatorIp;
+    private String replyTo;
     private Date createTime;
     private String text;
-    private String imageUrl;
+    private Long messageId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +46,15 @@ public class Message {
         this.creatorIp = creatorIp;
     }
 
+    @Column(name = "replyTo")
+    public String getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(String replyTo) {
+        this.replyTo = replyTo;
+    }
+
     @Column(name = "createTime")
     public Date getCreateTime() {
         return createTime;
@@ -63,12 +73,12 @@ public class Message {
         this.text = text;
     }
 
-    @Column(name = "imageUrl")
-    public String getImageUrl() {
-        return imageUrl;
+    @Column(name = "messageId")
+    public Long getMessageId() {
+        return messageId;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
     }
 }

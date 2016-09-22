@@ -28,18 +28,23 @@ public class MessageDao {
         hibernateTemplate.delete(message);
     }
 
+    public void deleteMessage(Long messageId) {
+        final String hql = "DELETE Message WHERE id = ?";
+        hibernateTemplate.bulkUpdate(hql, new Object[]{messageId});
+    }
+
     public void updateMessage(Message message) {
         hibernateTemplate.update(message);
     }
 
     public List<Message> findMessage(String creator) {
-        String hql = "FROM Message WHERE creator = ?";
+        final String hql = "FROM Message WHERE creator = ?";
         List<Message> messages = (List<Message>) hibernateTemplate.find(hql, new Object[]{creator});
         return messages;
     }
 
     public List<Message> findMessage(Integer pageNo, Integer pageSize) {
-        String hql = "FROM Message";
+        final String hql = "FROM Message";
         List<Message> messages = findByPage(hql, null, pageNo, pageSize);
         return messages;
     }

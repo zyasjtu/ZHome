@@ -27,6 +27,11 @@ public class UserDao {
         hibernateTemplate.update(user);
     }
 
+    public void updateUser(String name, String password) {
+        final String hql = "UPDATE User set password = ? where name = ?";
+        hibernateTemplate.bulkUpdate(hql, new Object[]{password, name});
+    }
+
     public List<User> findUser(final String name, final String password) {
         final String hql = "FROM User WHERE name = ? AND password = ? ";
         List<User> users = (List<User>) hibernateTemplate.find(hql, new Object[]{name, password});
