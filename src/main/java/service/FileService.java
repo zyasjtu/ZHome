@@ -38,7 +38,7 @@ public class FileService {
         if (!file.isEmpty()) {
             try {
                 String filePath = request.getSession().getServletContext().getRealPath("/")
-                        + "uploadFile/" + file.getOriginalFilename();
+                        + "upload/" + file.getOriginalFilename();
                 file.transferTo(new File(filePath));
                 returnMap.put("respCode", "1000");
                 returnMap.put("respMsg", "uploadSuccess");

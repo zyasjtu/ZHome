@@ -21,5 +21,5 @@
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
           p:defaultEncoding="UTF-8"
           p:maxUploadSize="50000000"
-          p:uploadTempDir="uploadFile"/>
+          p:uploadTempDir="upload"/>
 </beans>

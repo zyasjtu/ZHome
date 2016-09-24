@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="../include/bootstrap.min.css">
+    <script src="../include/angular.min.js"></script>
+    <script src="../include/rootApp.js"></script>
+    <!--<script src="../include/bootstrap.min.js"></script>-->
+    <!--<script src="../include/jquery.min.js"></script>-->
+</head>
+
+<body ng-app="homeApp" ng-controller="homeCtrl">
+<div class="page-header">
+</div>
+<div class="container">
+    <ul>
+        <li ng-repeat="conversation in conversations">
+            {{ conversation.message }}<br>
+            <ul>
+                <li ng-repeat="comment in conversation.comments">
+                    {{ comment }}
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+</body>
+
+<script>
+    var homeApp = angular.module('homeApp', ["rootApp"]);
+
+    homeApp.controller('homeCtrl', function ($scope, $http) {
+        $http.post(
+                "getConversations.json",
+                {
+                    pageNo: 1,
+                    pageSize: 5
+                }
+        ).success(function (response) {
+            $scope.respCode = response.respCode;
+            $scope.conversations = response.conversations;
+        });
+    });
+</script>
+
+</html>

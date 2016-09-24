@@ -17,6 +17,7 @@ import java.util.Map;
  * Created by zya on 2016/9/9.
  */
 @Controller
+@RequestMapping("/page")
 public class ConversationController {
     @Autowired
     private ConversationService conversationService;
