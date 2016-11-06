@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <version>3.20.0-GA</version>
+        <version>3.14.0-GA</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
@@ -78,6 +78,11 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
       <version>1.8.8</version>
+    </dependency>
+      <dependency>
+          <groupId>redis.clients</groupId>
+          <artifactId>jedis</artifactId>
+          <version>2.5.2</version>
     </dependency>
   </dependencies>
   <build>
