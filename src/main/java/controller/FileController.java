@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import service.FileService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,5 +53,19 @@ public class FileController {
         return JSON.toJSONString(returnMap);
     }
 
+    @RequestMapping("/uploadImage.json")
+    @ResponseBody
+    public String uploadImage(HttpServletRequest request, HttpServletResponse response,
+                              @RequestParam("image") MultipartFile file) {
+        Map<String, Object> returnMap = new HashMap<String, Object>();
 
+        if (null == file) {
+            returnMap.put("respCode", "1001");
+            returnMap.put("respMsg", "invalidParameter");
+        } else {
+            returnMap = fileService.uploadImage(request, response, file);
+        }
+
+        return JSON.toJSONString(returnMap);
+    }
 }
