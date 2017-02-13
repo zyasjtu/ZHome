@@ -4,6 +4,7 @@ import api.FaceApi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import jni.FaceEngine;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -24,22 +25,68 @@ import java.util.Map;
  */
 @Service
 public class FileService {
-    public Map<String, Object> uploadFile(HttpServletRequest request, MultipartFile file) {
-        Map<String, Object> returnMap = saveFile(request, file);
-
-        return returnMap;
+    public Map<String, Object> uploadFile(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
+        Map<String, Object> saveFileReturnMap = saveFile(request, file);
+        if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
+            return saveFileReturnMap;
+        } else {
+            Map<String, Object> returnMap = new HashMap<String, Object>();
+            try {
+                String filePath = request.getSession().getServletContext().getRealPath("/")
+                        + "upload/" + file.getOriginalFilename();
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                System.loadLibrary("FaceEngine");
+                Mat img = Highgui.imread(filePath);
+                int[] facePoints = FaceEngine.detect(img.getNativeObjAddr(),
+                        request.getSession().getServletContext().getRealPath("/"));
+                for (int i = 0; i < facePoints.length; i += 4) {
+                    Point pointTL = new Point((double) facePoints[i], (double) facePoints[i + 1]);
+                    Point pointBR = new Point((double) (facePoints[i] + facePoints[i + 2]),
+                            (double) (facePoints[i + 1] + facePoints[i + 3]));
+                    Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
+                }
+                Highgui.imwrite(filePath, img);
+                response.sendRedirect("upload/" + file.getOriginalFilename());
+                returnMap.put("respCode", "1000");
+                returnMap.put("respMsg", "success");
+            } catch (Exception e) {
+                e.printStackTrace();
+                returnMap.put("respCode", "1001");
+                returnMap.put("respMsg", "detect face fail");
+            }
+            return returnMap;
+        }
     }
 
-    public Map<String, Object> uploadFiles(HttpServletRequest request, MultipartFile[] files) {
-        Map<String, Object> returnMap = new HashMap<String, Object>();
-
+    public Map<String, Object> uploadFiles(HttpServletRequest request, HttpServletResponse response, MultipartFile[] files) {
+        Map<String, Object> saveFileReturnMap = new HashMap<String, Object>();
         for (MultipartFile file : files) {
-            returnMap = saveFile(request, file);
-            if (!"1000".equals(returnMap.get("respCode"))) {
-                break;
+            saveFileReturnMap = saveFile(request, file);
+            if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
+                return saveFileReturnMap;
             }
         }
 
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        try {
+            String filePath1 = request.getSession().getServletContext().getRealPath("/")
+                    + "upload/" + files[0].getOriginalFilename();
+            String filePath2 = request.getSession().getServletContext().getRealPath("/")
+                    + "upload/" + files[1].getOriginalFilename();
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            System.loadLibrary("FaceEngine");
+            Mat img1 = Highgui.imread(filePath1);
+            Mat img2 = Highgui.imread(filePath2);
+            double score = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(),
+                    request.getSession().getServletContext().getRealPath("/"));
+            returnMap.put("score", score);
+            returnMap.put("respCode", "1000");
+            returnMap.put("respMsg", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnMap.put("respCode", "1001");
+            returnMap.put("respMsg", "identify face fail");
+        }
         return returnMap;
     }
 
@@ -56,8 +103,8 @@ public class FileService {
             String url = "https://api-cn.faceplusplus.com/facepp/v3/detect";
             HashMap<String, String> map = new HashMap<String, String>();
             HashMap<String, byte[]> byteMap = new HashMap<String, byte[]>();
-            map.put("api_key", "key");
-            map.put("api_secret", "secret");
+            map.put("api_key", "THK3iDEykQSRZH3X8miQPfCyE1WNFVW9");
+            map.put("api_secret", "LnemLDiGWn8tW36WtdHa5qErCigL5Gum");
             byteMap.put("image_file", buff);
 
             Map<String, Object> returnMap = new HashMap<String, Object>();

@@ -27,18 +27,18 @@
         <url-pattern>*.json</url-pattern>
     </servlet-mapping>
 
-    <filter>
-        <filter-name>loginFilter</filter-name>
-        <filter-class>filter.LoginFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>loginFilter</filter-name>
-        <url-pattern>*.html</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>loginFilter</filter-name>
-        <url-pattern>*.json</url-pattern>
-    </filter-mapping>
+    <!--<filter>-->
+    <!--<filter-name>loginFilter</filter-name>-->
+    <!--<filter-class>filter.LoginFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+    <!--<filter-name>loginFilter</filter-name>-->
+    <!--<url-pattern>*.html</url-pattern>-->
+    <!--</filter-mapping>-->
+    <!--<filter-mapping>-->
+    <!--<filter-name>loginFilter</filter-name>-->
+    <!--<url-pattern>*.json</url-pattern>-->
+    <!--</filter-mapping>-->
 
     <filter>
         <filter-name>springEncoding</filter-name>
@@ -58,7 +58,7 @@
     </filter-mapping>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
     <error-page>
         <error-code>404</error-code>
