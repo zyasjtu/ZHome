@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "ZHome_User")
 public class User {
     private Long id;
-    private String name;
+    private String email;
     private String password;
     private Date createTime;
     private Date updateTime;
@@ -26,13 +26,13 @@ public class User {
         this.id = id;
     }
 
-    @Column(name = "name")
-    public String getName() {
-        return name;
+    @Column(name = "email")
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Column(name = "password")

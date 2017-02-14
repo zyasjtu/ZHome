@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>登录/注册</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    <link href="./include/signin.css" rel="stylesheet">
+
+    <!--jquery-->
+    <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <form class="form-signin">
+        <h2 class="form-signin-heading">登录</h2>
+        <label for="signinEmail" class="sr-only">邮箱</label>
+        <input type="email" id="signinEmail" class="form-control" placeholder="邮箱" required="" autofocus="">
+        <label for="signinPassword" class="sr-only">密码</label>
+        <input type="password" id="signinPassword" class="form-control" placeholder="密码" required=""
+               style="margin-bottom: 10px">
+        <!--<div class="checkbox">-->
+        <!--<label>-->
+        <!--<input type="checkbox" value="remember-me"> Remember me-->
+        <!--</label>-->
+        <!--</div>-->
+        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="signInCheck()">登录</button>
+    </form>
+
+    <div class="page-header"></div>
+
+    <form class="form-signin">
+        <h2 class="form-signin-heading">注册</h2>
+        <label for="signupEmail" class="sr-only">邮箱</label>
+        <input type="email" id="signupEmail" class="form-control" placeholder="邮箱" required="" autofocus="">
+        <label for="signupPassword1" class="sr-only">密码</label>
+        <input type="password" id="signupPassword1" class="form-control" placeholder="密码" required="">
+        <label for="signupPassword2" class="sr-only">重复密码</label>
+        <input type="password" id="signupPassword2" class="form-control" placeholder="重复密码" required="">
+        <label for="signupVerifycode" class="sr-only">验证码</label>
+        <input type="verifycode" id="signupVerifycode" class="form-control" placeholder="验证码" required=""
+               style="margin-bottom: 10px">
+        <a onclick="verifyCodeCheck()">获取验证码</a>
+        <!--<div class="checkbox">-->
+        <!--<label>-->
+        <!--<input type="checkbox" value="remember-me"> Remember me-->
+        <!--</label>-->
+        <!--</div>-->
+        <button class="btn btn-lg btn-primary btn-block" type="button" style="margin-top: 10px" onclick="signUpCheck()">
+            注册
+        </button>
+    </form>
+
+</div> <!-- /container -->
+
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script>
+    function signInCheck() {
+        var signInEmail = $("#signinEmail").val();
+        var signInPassword = $("#signinPassword").val();
+        if (signInEmail === "" || signInPassword === "") {
+            alert("邮箱/密码不能为空！");
+            return;
+        }
+        if (signInEmail.indexOf("@") <= 0) {
+            alert("邮箱格式有误！");
+            return;
+        }
+
+        $.post("signInCheck.json",
+                {
+                    signInEmail: signInEmail,
+                    signInPassword: signInPassword
+                },
+                function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj.respCode === "1000") {
+                        window.location.href = "./index.html";
+                    }
+                    else {
+                        alert(obj.respMsg);
+                    }
+                }
+        )
+    }
+
+    function signUpCheck() {
+        var signUpEmail = $("#signupEmail").val();
+        var signUpPassword1 = $("#signupPassword1").val();
+        var signUpPassword2 = $("#signupPassword2").val();
+        var signUpVerifyCode = $("#signupVerifycode").val();
+        if (signUpEmail === "" || signUpPassword1 === "" || signUpPassword2 === "" || signUpVerifyCode === "") {
+            alert("邮箱/密码/验证码不能为空！");
+            return;
+        }
+        if (signUpEmail.indexOf("@") <= 0) {
+            alert("邮箱格式有误！");
+            return;
+        }
+        if (signUpPassword1 !== signUpPassword2) {
+            alert("两次输入密码不一致！");
+            return;
+        }
+
+        $.post("signUpCheck.json",
+                {
+                    signUpEmail: signUpEmail,
+                    signUpPassword1: signUpPassword1,
+                    signUpPassword2: signUpPassword2,
+                    signUpVerifyCode: signUpVerifyCode
+                },
+                function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj.respCode === "1000") {
+                        window.location.href = "./index.html";
+                    }
+                    else {
+                        alert(obj.respMsg);
+                    }
+                }
+        )
+    }
+
+    function verifyCodeCheck() {
+        var signUpEmail = $("#signupEmail").val();
+        if (signUpEmail === "") {
+            alert("邮箱账号不能为空！");
+            return;
+        }
+        if (signUpEmail.indexOf("@") <= 0) {
+            alert("邮箱格式有误！");
+            return;
+        }
+
+        $.post("verifyCodeCheck.json",
+                {
+                    signUpEmail: signUpEmail
+                },
+                function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj.respCode === "1000") {
+                        alert("验证码已发送至邮箱，请查收！");
+                    }
+                    else {
+                        alert(obj.respMsg);
+                    }
+                }
+        )
+    }
+</script>
+</body>
+</html>

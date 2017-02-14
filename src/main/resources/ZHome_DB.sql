@@ -1,13 +1,13 @@
 CREATE TABLE zhome_db.ZHome_User
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name NVARCHAR(64) NOT NULL,
+    email NVARCHAR(64) NOT NULL,
     password NVARCHAR(64) NOT NULL,
     createTime DATETIME NOT NULL,
     updateTime DATETIME NOT NULL
 );
-CREATE UNIQUE INDEX zhome_user_name_uindex ON zhome_db.zhome_user (name);
-INSERT INTO zhome_db.ZHome_User (name, password, createTime, updateTime) VALUES ('Colin', 'a', CURRENT_TIME, CURRENT_TIME);
+
+CREATE UNIQUE INDEX zhome_user_name_uindex ON zhome_db.zhome_user (email);
 
 CREATE TABLE zhome_db.ZHome_Message
 (

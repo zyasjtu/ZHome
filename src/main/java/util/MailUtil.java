@@ -10,20 +10,23 @@ import java.util.Properties;
  */
 
 public class MailUtil {
-    public static void main(String args[]) {
+    public static void sendMail(String mailAccount, String mailSubject, String verifyCode) {
         JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
         // 设定mail server
         senderImpl.setHost("smtp.163.com");
+
+        String mailText = "【机器之芯】 尊敬的" + mailAccount.substring(0, mailAccount.indexOf("@")) + "，" +
+                "欢迎注册机器之芯账号，您的验证码是： " + verifyCode + "，若非本人操作请忽略该邮件。";
 
         // 建立邮件消息
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         // 设置收件人，寄件人 用数组发送多个邮件
         // String[] array = new String[] {"sun111@163.com","sun222@sohu.com"};
         // mailMessage.setTo(array);
-        mailMessage.setTo("username@163.com");
+        mailMessage.setTo(mailAccount);
         mailMessage.setFrom("username@163.com");
-        mailMessage.setSubject("测试简单文本邮件发送！");
-        mailMessage.setText("测试我的简单邮件发送机制！！");
+        mailMessage.setSubject(mailSubject);
+        mailMessage.setText(mailText);
 
         senderImpl.setUsername("username"); // 根据自己的情况,设置username
         senderImpl.setPassword("password"); // 根据自己的情况, 设置password
@@ -34,7 +37,5 @@ public class MailUtil {
         senderImpl.setJavaMailProperties(prop);
         // 发送邮件
         senderImpl.send(mailMessage);
-
-        System.out.println(" 邮件发送成功.. ");
     }
 }

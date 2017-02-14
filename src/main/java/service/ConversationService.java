@@ -49,7 +49,7 @@ public class ConversationService {
         User user = (User) request.getSession().getAttribute("loginUser");
 
         Message message = new Message();
-        message.setCreator(user.getName());
+        message.setCreator(user.getEmail());
         message.setCreatorIp(request.getRemoteAddr());
         message.setCreateTime(new Date());
         message.setText(text);
@@ -79,7 +79,7 @@ public class ConversationService {
         User user = (User) request.getSession().getAttribute("loginUser");
 
         Comment comment = new Comment();
-        comment.setCreator(user.getName());
+        comment.setCreator(user.getEmail());
         comment.setCreatorIp(request.getRemoteAddr());
         comment.setReplyTo(replyTo);
         comment.setCreateTime(new Date());

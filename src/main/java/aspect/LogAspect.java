@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Aspect
 public class LogAspect {
-    @Pointcut("execution(* controller.LoginController.*(..)) && @annotation(lf)")
+    @Pointcut("execution(* controller.UserController.*(..)) && @annotation(lf)")
     public void functionPointcut(LogFunction lf) {
     }
 
-    @Pointcut("execution(* controller.LoginController.logout(..))")
+    @Pointcut("execution(* controller.UserController.signOut(..))")
     public void logoutPointcut() {
     }
 
@@ -34,6 +34,6 @@ public class LogAspect {
         Logger logger = Logger.getLogger(joinPoint.getTarget().getClass());
         HttpServletRequest request = (HttpServletRequest) joinPoint.getArgs()[0];
         User user = (User) request.getSession().getAttribute("loginUser");
-        logger.info(user.getName() + " logout!");
+        logger.info(user.getEmail() + " logout!");
     }
 }

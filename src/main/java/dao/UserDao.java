@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +17,15 @@ public class UserDao {
     private HibernateTemplate hibernateTemplate;
 
     public void addUser(User user) {
+        hibernateTemplate.save(user);
+    }
+
+    public void addUser(String email, String password) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
         hibernateTemplate.save(user);
     }
 
@@ -32,9 +42,9 @@ public class UserDao {
         hibernateTemplate.bulkUpdate(hql, new Object[]{password, name});
     }
 
-    public List<User> findUser(final String name, final String password) {
-        final String hql = "FROM User WHERE name = ? AND password = ? ";
-        List<User> users = (List<User>) hibernateTemplate.find(hql, new Object[]{name, password});
+    public List<User> findUser(final String email, final String password) {
+        final String hql = "FROM User WHERE email = ? AND password = ? ";
+        List<User> users = (List<User>) hibernateTemplate.find(hql, new Object[]{email, password});
         return users;
     }
 }

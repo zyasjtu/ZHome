@@ -103,8 +103,8 @@ public class FileService {
             String url = "https://api-cn.faceplusplus.com/facepp/v3/detect";
             HashMap<String, String> map = new HashMap<String, String>();
             HashMap<String, byte[]> byteMap = new HashMap<String, byte[]>();
-            map.put("api_key", "THK3iDEykQSRZH3X8miQPfCyE1WNFVW9");
-            map.put("api_secret", "LnemLDiGWn8tW36WtdHa5qErCigL5Gum");
+            map.put("api_key", "key");
+            map.put("api_secret", "secret");
             byteMap.put("image_file", buff);
 
             Map<String, Object> returnMap = new HashMap<String, Object>();
