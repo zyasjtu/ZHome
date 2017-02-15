@@ -30,10 +30,13 @@
 
     <!-- Custom styles for this template -->
     <link href="./static/carousel.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/angular.js/1.4.6/angular.min.js"></script>
+    <script src="./static/rootApp.js"></script>
 </head>
 <!-- NAVBAR
 ================================================== -->
-<body>
+<body ng-app="platformApp" ng-controller="platformCtrl">
 <div class="navbar-wrapper">
     <div class="container">
         <nav class="navbar navbar-inverse navbar-static-top">
@@ -50,9 +53,9 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">主页</a></li>
+                        <li><a href="index.html">主页</a></li>
                         <li><a href="demo.html">演示</a></li>
-                        <li><a href="platform.html">平台</a></li>
+                        <li class="active"><a href="#">平台</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-haspopup="true" aria-expanded="false">关于我们 <span class="caret"></span></a>
@@ -90,10 +93,10 @@
                  alt="First slide">
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>视觉检测</h1>
-                    <p>Visual Detection</p>
-                    <p>给定一张图像或视频帧，输出其中所有目标的位置（bounding-box），并给出每个目标的具体类别（label）。解决“是什么”和“在哪里”两个问题。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">快速注册</a></p>
+                    <h1>浏览任务</h1>
+                    <p>Seek Task</p>
+                    <p>如果你是开发者，你可以在这个平台上浏览已发布的需求文档，寻找自己擅长的任务，并通过任务发布者留下的联系方式与其寻求合作。</p>
+                    <p><a class="btn btn-lg btn-primary" href="#seekTask" role="button">快速浏览</a></p>
                 </div>
             </div>
         </div>
@@ -103,10 +106,10 @@
                  alt="Second slide">
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>图像识别</h1>
-                    <p>Image Recognition</p>
-                    <p>输入一张图像或视频帧，识别图片中的内容信息，标签涵盖人物、风景、建筑、常见的社交与生活物品等。让计算机理解的非结构化（non-structural）的图像数据。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">立即登陆</a></p>
+                    <h1>发布任务</h1>
+                    <p>Publish Task</p>
+                    <p>如果你是需求方，你可以在这个平台上发布需求主题和项目细节，留下自己的联系方式，等待合适的开发人员接单并为你提供解决方案。</p>
+                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">立即发布</a></p>
                 </div>
             </div>
         </div>
@@ -116,10 +119,10 @@
                  alt="Third slide">
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>目标跟踪</h1>
-                    <p>Target Tracking</p>
-                    <p>给定目标和一段连续视频帧，利用时序相关性（Temporal Correlation），快速高效地对连续时间序列中出现的目标进行再定位，输出跟踪目标的位置。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">快速注册</a></p>
+                    <h1>提供技术</h1>
+                    <p>Offer Technology</p>
+                    <p>如果你是开发者，你可以在这个平台上介绍自己擅长的技能和熟悉的领域，留下自己的联系方式，以便匹配合适的任务。</p>
+                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">快速提供</a></p>
                 </div>
             </div>
         </div>
@@ -129,10 +132,10 @@
                  alt="Third slide">
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>个性化解决方案</h1>
-                    <p>Personal Solution</p>
-                    <p>对于其他个性化需求，您可以联系我们为您提供解决方案，范围涵盖但不限于图像处理、区域分割、特征匹配、模式识别等。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">立即登陆</a></p>
+                    <h1>寻找技术</h1>
+                    <p>Search Technology</p>
+                    <p>如果你是需求方，你可以在这个平台上搜索开发人员的技能信息，了解他们各自能为你提供什么样的服务，然后与之寻求合作。</p>
+                    <p><a class="btn btn-lg btn-primary" href="#searchTechnology" role="button">立即寻找</a></p>
                 </div>
             </div>
         </div>
@@ -153,87 +156,48 @@
 <!-- Wrap the rest of the page in another container to center all the content. -->
 
 <div class="container marketing">
-
-    <!-- Three columns of text below the carousel -->
-    <div class="row">
-        <div class="col-lg-4">
-            <img class="img-circle" src="./static/free.png" alt="Generic placeholder image" width="140" height="140">
-            <h2>免费服务</h2>
-            <p>使用最前沿的人工智能技术和深度学习框架，搭建出一套简单易用、功能强大的人工智能引擎。以API或SDK形式提供视觉服务，支持免费演示、快速验证。</p>
-            <p><a class="btn btn-default" href="demo.html" role="button">View details &raquo;</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-            <img class="img-circle" src="./static/product.png" alt="Generic placeholder image" width="140"
-                 height="140">
-            <h2>产品形式</h2>
-            <p>产品包括但不限于人脸识别/分析，车辆检测/识别，单目标/多目标跟踪，OCR文字识别/车牌识别等。若您有其他个性化需求，欢迎联系我们为您提供解决方案。</p>
-            <p><a class="btn btn-default" href="#products" role="button">View details &raquo;</a></p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-            <img class="img-circle" src="./static/platform.png" alt="Generic placeholder image" width="140"
-                 height="140">
-            <h2>开放平台</h2>
-            <p>需求方可以在平台上发布需求文档，也可以直接联系我们为您提供解决方案；
-                开发者可以在平台上接受已发布的任务，也可以提交您的个人技能以匹配合适的项目；</p>
-            <p><a class="btn btn-default" href="platform.html" role="button">View details &raquo;</a></p>
-        </div><!-- /.col-lg-4 -->
-    </div><!-- /.row -->
-
-
-    <!-- START THE FEATURETTES -->
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette" id="products">
-        <div class="col-md-7">
-            <h2 class="featurette-heading">人脸检测、识别、分析<span class="text-muted"></span></h2>
-            <p class="lead">在多种姿态、光照、肤色的复杂环境下，快速准确的定位人脸区域和五官位置，通过提取的人脸特征点，识别出人物性别、年龄等属性，并进一步提供1:1人脸比对和1:N人脸搜索功能。</p>
-        </div>
-        <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="./static/face.jpg" width="500" height="500"
-                 alt="Generic placeholder image">
-        </div>
+    <h2 class="sub-header" id="seekTask">浏览任务</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>主题</th>
+                <th>作者</th>
+                <th>时间</th>
+                <th>手机</th>
+                <th>邮件</th>
+                <th>微信</th>
+                <th>QQ</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="topic in topics">
+                <td>{{ topic.id }}</td>
+                <td>{{ topic.subject }}</td>
+                <td>{{ topic.author }}</td>
+                <td>{{ topic.updateTime }}</td>
+                <td>{{ topic.authorMobile }}</td>
+                <td>{{ topic.authorEmail }}</td>
+                <td>{{ topic.authorWechat }}</td>
+                <td>{{ topic.authorQQ }}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-        <div class="col-md-7 col-md-push-5">
-            <h2 class="featurette-heading">车辆检测、车牌识别<span class="text-muted"></span></h2>
-            <p class="lead">全天候、多角度、强鲁棒的进行车辆位置检测和车辆数量统计，对每张车辆完成车牌定位和车牌号码识别。现有产品已应用于停车场、高速公路、小区出入口等场景。</p>
-        </div>
-        <div class="col-md-5 col-md-pull-7">
-            <img class="featurette-image img-responsive center-block" src="./static/vehicle.jpg" width="500"
-                 height="500" alt="Generic placeholder image">
-        </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-        <div class="col-md-7">
-            <h2 class="featurette-heading">OCR、手写字体识别<span class="text-muted"></span></h2>
-            <p class="lead">利用光学字符识别技术，将图片上的文字内容转换为可编辑文本。目前已有身份证、名片、驾照、营业执照OCR识别的全流程解决方案，为您提供最方便快捷的证件信息录入体验。</p>
-        </div>
-        <div class="col-md-5">
-            <img class="featurette-image img-responsive center-block" src="./static/id_scan.png" width="500"
-                 height="500" alt="Generic placeholder image">
-        </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-    <!-- /END THE FEATURETTES -->
 
 
     <!-- FOOTER -->
     <footer>
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017 BrainOfMachine, Inc. &middot; <a href="#">简单易用、功能强大的人工智能引擎</a> &middot; <a href="#">面向需求方和开发者的免费开放平台</a>
+        <p class="pull-right">
+            <a href="#">Back to top</a>
+        </p>
+        <p>&copy; 2017 BrainOfMachine, Inc. &middot;
+            <a href="#">简单易用、功能强大的人工智能引擎</a> &middot;
+            <a href="#">面向需求方和开发者的免费开放平台</a>
         </p>
     </footer>
 </div><!-- /.container -->
-
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -246,4 +210,19 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 </body>
+
+<script>
+    var platformApp = angular.module('platformApp', ["rootApp"]);
+
+    platformApp.controller('platformCtrl', function ($scope, $http) {
+        $http.post(
+                "findAllTopic.json",
+                {}
+        ).success(function (response) {
+            $scope.respCode = response.respCode;
+            $scope.topics = response.topics;
+        });
+    });
+</script>
+
 </html>

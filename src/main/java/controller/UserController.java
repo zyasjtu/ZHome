@@ -6,7 +6,6 @@ import form.SignInForm;
 import form.SignUpForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import service.UserService;
@@ -57,18 +56,11 @@ public class UserController {
         return JSON.toJSONString(returnMap);
     }
 
-    @RequestMapping("/verifyCodeCheck.json")
+    @RequestMapping("/changeVerifyCode.json")
     @ResponseBody
     @LogFunction
-    public String verifyCodeCheck(HttpServletRequest request, String signUpEmail) {
-        Map<String, Object> returnMap = new HashMap<String, Object>();
-
-        if (StringUtils.isEmpty(signUpEmail) || !signUpEmail.contains("@")) {
-            returnMap.put("respCode", "1001");
-            returnMap.put("respMsg", "invalidParameter");
-        } else {
-            returnMap = userService.verifyCodeCheck(request, signUpEmail);
-        }
+    public String changeVerifyCode(HttpServletRequest request) {
+        Map<String, Object> returnMap = userService.changeVerifyCode(request);
 
         return JSON.toJSONString(returnMap);
     }

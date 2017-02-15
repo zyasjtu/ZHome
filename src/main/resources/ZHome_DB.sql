@@ -29,3 +29,19 @@ CREATE TABLE zhome_db.ZHome_Comment
     text NVARCHAR(640) NOT NULL,
     messageId BIGINT NOT NULL
 );
+
+CREATE TABLE zhome_db.zhome_topic
+(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    subject VARCHAR(64) NOT NULL,
+    detail VARCHAR(2048) NOT NULL,
+    author VARCHAR(32) NOT NULL,
+    authorMobile VARCHAR(32) DEFAULT NULL ,
+    authorQQ VARCHAR(32) DEFAULT NULL ,
+    authorEmail VARCHAR(32) DEFAULT NULL ,
+    authorWechat VARCHAR(32) DEFAULT NULL ,
+    authorIp VARCHAR(32) NOT NULL,
+    authorType INT NOT NULL,
+    createTime DATETIME NOT NULL,
+    updateTime DATETIME NOT NULL
+);

@@ -6,7 +6,7 @@ import form.SignUpForm;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import util.MailUtil;
+import util.VerifyCodeUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -64,11 +64,10 @@ public class UserService {
         return returnMap;
     }
 
-    public Map<String, Object> verifyCodeCheck(HttpServletRequest request, String signUpEmail) {
+    public Map<String, Object> changeVerifyCode(HttpServletRequest request) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
         try {
-            String verifyCode = String.valueOf((int) (Math.random() * 10000));
-            MailUtil.sendMail(signUpEmail, "欢迎注册机器之芯账号", verifyCode);
+            String verifyCode = VerifyCodeUtil.generateVerifyCode(request);
             returnMap.put("respCode", "1000");
             returnMap.put("respMsg", "verifyCodeSuccess");
             request.getSession().setAttribute("verifyCode", verifyCode);
