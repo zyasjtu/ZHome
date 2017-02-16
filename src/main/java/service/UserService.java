@@ -6,6 +6,7 @@ import form.SignUpForm;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import util.RSAUtil;
 import util.VerifyCodeUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +26,10 @@ public class UserService {
     public Map<String, Object> signInCheck(HttpServletRequest request, SignInForm signInForm) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
         try {
-            List<User> users = userDao.findUser(signInForm.getSignInEmail(), signInForm.getSignInPassword());
+            String signInEmail = RSAUtil.decrypt(signInForm.getSignInEmail(), RSAUtil.PRIVATE_KEY);
+            String signInPassword = RSAUtil.decrypt(signInForm.getSignInPassword(), RSAUtil.PRIVATE_KEY);
+
+            List<User> users = userDao.findUser(signInEmail, signInPassword);
             if (users.size() == 0) {
                 returnMap.put("respCode", "1001");
                 returnMap.put("respMsg", "inputWrong");
@@ -46,9 +50,12 @@ public class UserService {
     public Map<String, Object> signUpCheck(HttpServletRequest request, SignUpForm signUpForm) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
         try {
+            String signUpEmail = RSAUtil.decrypt(signUpForm.getSignUpEmail(), RSAUtil.PRIVATE_KEY);
+            String signUpPassword = RSAUtil.decrypt(signUpForm.getSignUpPassword1(), RSAUtil.PRIVATE_KEY);
+
             User user = new User();
-            user.setEmail(signUpForm.getSignUpEmail());
-            user.setPassword(signUpForm.getSignUpPassword1());
+            user.setEmail(signUpEmail);
+            user.setPassword(signUpPassword);
             user.setCreateTime(new Date());
             user.setUpdateTime(new Date());
             userDao.addUser(user);

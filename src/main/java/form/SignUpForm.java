@@ -14,9 +14,8 @@ public class SignUpForm {
     public String signUpVerifyCode;
 
     public boolean validate(HttpSession session) {
-        if (StringUtils.isEmpty(signUpEmail) || !signUpEmail.contains("@") || StringUtils.isEmpty(signUpPassword1) ||
-                StringUtils.isEmpty(signUpPassword2) || !signUpPassword1.equals(signUpPassword2) ||
-                StringUtils.isEmpty(signUpVerifyCode) || !signUpVerifyCode.equals(session.getAttribute("verifyCode")))
+        if (StringUtils.isEmpty(signUpEmail) || StringUtils.isEmpty(signUpPassword1) || StringUtils.isEmpty(signUpPassword2)
+                || StringUtils.isEmpty(signUpVerifyCode) || !signUpVerifyCode.equals(session.getAttribute("verifyCode")))
             return false;
         else
             return true;

@@ -75,7 +75,6 @@
     </div>
 </div>
 
-
 <!-- Carousel
 ================================================== -->
 <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -156,7 +155,42 @@
 <!-- Wrap the rest of the page in another container to center all the content. -->
 
 <div class="container marketing">
+
+    <hr class="featurette-divider">
+
     <h2 class="sub-header" id="seekTask">浏览任务</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>主题</th>
+                <th>作者</th>
+                <th>时间</th>
+                <th>手机</th>
+                <th>邮件</th>
+                <th>微信</th>
+                <th>QQ</th>
+            </tr>
+            </thead>
+            <tbody ng-controller="tableCtrl">
+            <tr ng-repeat="topic in topics">
+                <td ng-click="showDetail(topic)">{{ $index + 1 }}</td>
+                <td>{{ topic.subject }}</td>
+                <td>{{ topic.author }}</td>
+                <td>{{ topic.updateTime }}</td>
+                <td>{{ topic.authorMobile }}</td>
+                <td>{{ topic.authorEmail }}</td>
+                <td>{{ topic.authorWechat }}</td>
+                <td>{{ topic.authorQQ }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="featurette-divider">
+
+    <h2 class="sub-header" id="searchTechnology">寻找技术</h2>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -173,7 +207,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="topic in topics">
-                <td>{{ topic.id }}</td>
+                <td>{{ $index + 1 }}</td>
                 <td>{{ topic.subject }}</td>
                 <td>{{ topic.author }}</td>
                 <td>{{ topic.updateTime }}</td>
@@ -186,6 +220,7 @@
         </table>
     </div>
 
+    <hr class="featurette-divider">
 
     <!-- FOOTER -->
     <footer>
@@ -197,6 +232,7 @@
             <a href="#">面向需求方和开发者的免费开放平台</a>
         </p>
     </footer>
+
 </div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
@@ -223,6 +259,12 @@
             $scope.topics = response.topics;
         });
     });
+
+    platformApp.controller('tableCtrl', ['$scope', function ($scope) {
+        $scope.showDetail = function (topic) {
+            alert(topic.detail);
+        };
+    }]);
 </script>
 
 </html>

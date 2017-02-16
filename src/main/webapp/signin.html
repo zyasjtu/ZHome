@@ -51,7 +51,7 @@
         <button class="btn btn-lg btn-primary btn-block" type="button" onclick="signInCheck()">登录</button>
     </form>
 
-    <div class="page-header"></div>
+    <hr class="featurette-divider">
 
     <form class="form-signin">
         <h2 class="form-signin-heading">注册</h2>
@@ -64,7 +64,8 @@
         <label for="signupVerifycode" class="sr-only">验证码</label>
         <input type="verifycode" id="signupVerifycode" class="form-control" placeholder="验证码" required=""
                style="margin-bottom: 10px">
-        <a onclick="changeVerifyCode()">更换验证码</a> <img src="./static/verifyCode.jpg" width="40" height="20"
+        <a onclick="changeVerifyCode()">更换验证码</a> <img src="./static/verifyCode.jpg?javascript:Math.random()" width="40"
+                                                       height="20"
                                                        align="right" id="verifyCode">
         <!--<div class="checkbox">-->
         <!--<label>-->
@@ -86,6 +87,7 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="./static/JSEncrypt.js"></script>
 
 <script>
     function signInCheck() {
@@ -100,10 +102,17 @@
             return;
         }
 
+        // Encrypt with the public key...
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(
+                "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCP4Jto0eLeFNSD/VScEEL4UdDag9cZNBjWfH3X" +
+                "5uRyU0p24hSOWSOVsjIbKcKCaUN58BrKEyOMEqHoaFRLTuo0/eKjyl9tGUhQWQykJg3UBtgxbD5Y" +
+                "N/GPmN4T7YqRDfLzd73j2ZVf9dTwhVnOPYl+DiyOzGV3wgnIEY6xXgxBcwIDAQAB");
+
         $.post("signInCheck.json",
                 {
-                    signInEmail: signInEmail,
-                    signInPassword: signInPassword
+                    signInEmail: encrypt.encrypt(signInEmail),
+                    signInPassword: encrypt.encrypt(signInPassword)
                 },
                 function (data) {
                     var obj = $.parseJSON(data);
@@ -135,11 +144,17 @@
             return;
         }
 
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(
+                "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCP4Jto0eLeFNSD/VScEEL4UdDag9cZNBjWfH3X" +
+                "5uRyU0p24hSOWSOVsjIbKcKCaUN58BrKEyOMEqHoaFRLTuo0/eKjyl9tGUhQWQykJg3UBtgxbD5Y" +
+                "N/GPmN4T7YqRDfLzd73j2ZVf9dTwhVnOPYl+DiyOzGV3wgnIEY6xXgxBcwIDAQAB");
+
         $.post("signUpCheck.json",
                 {
-                    signUpEmail: signUpEmail,
-                    signUpPassword1: signUpPassword1,
-                    signUpPassword2: signUpPassword2,
+                    signUpEmail: encrypt.encrypt(signUpEmail),
+                    signUpPassword1: encrypt.encrypt(signUpPassword1),
+                    signUpPassword2: encrypt.encrypt(signUpPassword2),
                     signUpVerifyCode: signUpVerifyCode
                 },
                 function (data) {
@@ -155,18 +170,21 @@
     }
 
     function changeVerifyCode() {
-        $.post("changeVerifyCode.json",
-                {},
-                function (data) {
-                    var obj = $.parseJSON(data);
-                    if (obj.respCode === "1000") {
-                        setTimeout("document.getElementById('verifyCode').src = './static/verifyCode.jpg?' + Math.random() * 10000;", 2000);
-                    }
-                    else {
-                        alert(obj.respMsg);
-                    }
+        $.ajax({
+            type: "post",
+            url: "changeVerifyCode.json",
+            data: "",
+            async: false,
+            success: function (data) {
+                var obj = $.parseJSON(data);
+                if (obj.respCode === "1000") {
+                    document.getElementById('verifyCode').src = './static/verifyCode.jpg?' + Math.random();
                 }
-        )
+                else {
+                    alert(obj.respMsg);
+                }
+            }
+        });
     }
 </script>
 </body>

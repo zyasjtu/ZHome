@@ -27,18 +27,14 @@
         <url-pattern>*.json</url-pattern>
     </servlet-mapping>
 
-    <!--<filter>-->
-    <!--<filter-name>loginFilter</filter-name>-->
-    <!--<filter-class>filter.LoginFilter</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-    <!--<filter-name>loginFilter</filter-name>-->
-    <!--<url-pattern>*.html</url-pattern>-->
-    <!--</filter-mapping>-->
-    <!--<filter-mapping>-->
-    <!--<filter-name>loginFilter</filter-name>-->
-    <!--<url-pattern>*.json</url-pattern>-->
-    <!--</filter-mapping>-->
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>filter.SignUpFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>/signin.html</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>springEncoding</filter-name>

@@ -10,7 +10,7 @@ public class SignInForm {
     private String signInPassword;
 
     public boolean validate() {
-        if (StringUtils.isEmpty(signInEmail) || StringUtils.isEmpty(signInPassword) || !signInEmail.contains("@"))
+        if (StringUtils.isEmpty(signInEmail) || StringUtils.isEmpty(signInPassword))
             return false;
         else
             return true;
