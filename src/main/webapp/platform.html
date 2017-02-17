@@ -108,7 +108,7 @@
                     <h1>发布任务</h1>
                     <p>Publish Task</p>
                     <p>如果你是需求方，你可以在这个平台上发布需求主题和项目细节，留下自己的联系方式，等待合适的开发人员接单并为你提供解决方案。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">立即发布</a></p>
+                    <p><a class="btn btn-lg btn-primary" href="publish.html" role="button">立即发布</a></p>
                 </div>
             </div>
         </div>
@@ -121,7 +121,7 @@
                     <h1>提供技术</h1>
                     <p>Offer Technology</p>
                     <p>如果你是开发者，你可以在这个平台上介绍自己擅长的技能和熟悉的领域，留下自己的联系方式，以便匹配合适的任务。</p>
-                    <p><a class="btn btn-lg btn-primary" href="signin.html" role="button">快速提供</a></p>
+                    <p><a class="btn btn-lg btn-primary" href="publish.html" role="button">快速提供</a></p>
                 </div>
             </div>
         </div>
@@ -173,10 +173,10 @@
                 <th>QQ</th>
             </tr>
             </thead>
-            <tbody ng-controller="tableCtrl">
-            <tr ng-repeat="topic in topics">
-                <td ng-click="showDetail(topic)">{{ $index + 1 }}</td>
-                <td>{{ topic.subject }}</td>
+            <tbody ng-controller="modalCtrl">
+            <tr ng-repeat="topic in topics" ng-show="showTask(topic)">
+                <td>{{ $index + 1 }}</td>
+                <td ng-click="showDetail(topic)"><a>{{ topic.subject }}</a></td>
                 <td>{{ topic.author }}</td>
                 <td>{{ topic.updateTime }}</td>
                 <td>{{ topic.authorMobile }}</td>
@@ -205,10 +205,10 @@
                 <th>QQ</th>
             </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat="topic in topics">
+            <tbody ng-controller="modalCtrl">
+            <tr ng-repeat="topic in topics" ng-show="showTechnology(topic)">
                 <td>{{ $index + 1 }}</td>
-                <td>{{ topic.subject }}</td>
+                <td ng-click="showDetail(topic)"><a>{{ topic.subject }}</a></td>
                 <td>{{ topic.author }}</td>
                 <td>{{ topic.updateTime }}</td>
                 <td>{{ topic.authorMobile }}</td>
@@ -233,6 +233,20 @@
         </p>
     </footer>
 
+
+    <!-- modal template -->
+    <script type="text/ng-template" id="myModelContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ topic.subject }}</h3>
+        </div>
+        <div class="modal-body" style="word-break: break-all; word-wrap: break-word">
+            <p>{{ topic.detail }}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">确认</button>
+        </div>
+    </script>
+
 </div><!-- /.container -->
 
 <!-- Bootstrap core JavaScript
@@ -245,10 +259,11 @@
 <script src="../../assets/js/vendor/holder.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="http://cdn.bootcss.com/angular-ui-bootstrap/0.11.2/ui-bootstrap-tpls.js"></script>
 </body>
 
 <script>
-    var platformApp = angular.module('platformApp', ["rootApp"]);
+    var platformApp = angular.module('platformApp', ["rootApp", 'ui.bootstrap']);
 
     platformApp.controller('platformCtrl', function ($scope, $http) {
         $http.post(
@@ -260,11 +275,45 @@
         });
     });
 
-    platformApp.controller('tableCtrl', ['$scope', function ($scope) {
-        $scope.showDetail = function (topic) {
-            alert(topic.detail);
+    platformApp.controller('modalCtrl', function ($scope, $modal, $log) {
+        $scope.showTask = function (topic) {
+            if (topic.authorType == 1) {
+                return true;
+            } else {
+                return false;
+            }
         };
-    }]);
+
+        $scope.showTechnology = function (topic) {
+            return !$scope.showTask(topic);
+        };
+
+        $scope.showDetail = function (topic) {
+            var modalInstance = $modal.open({
+                templateUrl: 'myModelContent.html',
+                controller: 'ModalInstanceCtrl', // specify controller for modal
+                size: '',
+                resolve: {
+                    topic: function () {
+                        return topic;
+                    }
+                }
+            });
+            // modal return result
+            modalInstance.result.then(function () {
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date())
+            });
+        }
+    })
+    // modal controller
+            .controller('ModalInstanceCtrl', function ($scope, $modalInstance, topic) {
+                $scope.topic = topic;
+                // cancel click
+                $scope.ok = function () {
+                    $modalInstance.dismiss('cancel');
+                }
+            });
 </script>
 
 </html>
