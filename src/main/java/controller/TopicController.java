@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import service.TopicService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,8 +38,8 @@ public class TopicController {
 
     @RequestMapping("/findAllTopic.json")
     @ResponseBody
-    public String findAllTopic() {
+    public String findAllTopic() throws UnsupportedEncodingException {
         Map<String, Object> returnMap = topicService.findAllTopic();
-        return JSON.toJSONStringWithDateFormat(returnMap, "yyyy-MM-dd HH:mm:ss.SSS");
+        return new String(JSON.toJSONStringWithDateFormat(returnMap, "yyyy-MM-dd").getBytes("UTF-8"), "iso8859-1");
     }
 }
