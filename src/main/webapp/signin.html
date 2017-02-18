@@ -41,8 +41,7 @@
         <label for="signinEmail" class="sr-only">邮箱</label>
         <input type="email" id="signinEmail" class="form-control" placeholder="邮箱" required="" autofocus="">
         <label for="signinPassword" class="sr-only">密码</label>
-        <input type="password" id="signinPassword" class="form-control" placeholder="密码" required=""
-               style="margin-bottom: 10px">
+        <input type="password" id="signinPassword" class="form-control" placeholder="密码" required="">
         <!--<div class="checkbox">-->
         <!--<label>-->
         <!--<input type="checkbox" value="remember-me"> Remember me-->
@@ -62,9 +61,8 @@
         <label for="signupPassword2" class="sr-only">重复密码</label>
         <input type="password" id="signupPassword2" class="form-control" placeholder="重复密码" required="">
         <label for="signupVerifycode" class="sr-only">验证码</label>
-        <input type="verifycode" id="signupVerifycode" class="form-control" placeholder="验证码" required=""
-               style="margin-bottom: 10px">
-        <a onclick="changeVerifyCode()">更换验证码</a> <img src="./static/verifyCode.jpg?javascript:Math.random()" width="40"
+        <input type="plaintext" id="signupVerifycode" class="form-control" placeholder="验证码" required="">
+        <a onclick="changeVerifyCode()">更换验证码</a> <img src="./static/verifyCode.jpg" width="40"
                                                        height="20"
                                                        align="right" id="verifyCode">
         <!--<div class="checkbox">-->

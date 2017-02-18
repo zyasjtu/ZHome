@@ -24,4 +24,10 @@ public class TopicDao {
         List<Topic> topics = (List<Topic>) hibernateTemplate.find(hql);
         return topics;
     }
+
+    public List<Topic> findTopic(Integer authorType) {
+        final String hql = "FROM Topic WHERE authorType = ?";
+        List<Topic> topics = (List<Topic>) hibernateTemplate.find(hql, new Object[]{authorType});
+        return topics;
+    }
 }

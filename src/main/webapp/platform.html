@@ -174,15 +174,15 @@
             </tr>
             </thead>
             <tbody ng-controller="modalCtrl">
-            <tr ng-repeat="topic in topics" ng-show="showTask(topic)">
+            <tr ng-repeat="task in tasks" ng-show="showTask(task)">
                 <td>{{ $index + 1 }}</td>
-                <td ng-click="showDetail(topic)"><a>{{ topic.subject }}</a></td>
-                <td>{{ topic.author }}</td>
-                <td>{{ topic.updateTime }}</td>
-                <td>{{ topic.authorMobile }}</td>
-                <td>{{ topic.authorEmail }}</td>
-                <td>{{ topic.authorWechat }}</td>
-                <td>{{ topic.authorQQ }}</td>
+                <td ng-click="showDetail(task)"><a>{{ task.subject }}</a></td>
+                <td>{{ task.author }}</td>
+                <td>{{ task.updateTime }}</td>
+                <td>{{ task.authorMobile }}</td>
+                <td>{{ task.authorEmail }}</td>
+                <td>{{ task.authorWechat }}</td>
+                <td>{{ task.authorQQ }}</td>
             </tr>
             </tbody>
         </table>
@@ -206,15 +206,15 @@
             </tr>
             </thead>
             <tbody ng-controller="modalCtrl">
-            <tr ng-repeat="topic in topics" ng-show="showTechnology(topic)">
+            <tr ng-repeat="technology in technologies" ng-show="showTechnology(technology)">
                 <td>{{ $index + 1 }}</td>
-                <td ng-click="showDetail(topic)"><a>{{ topic.subject }}</a></td>
-                <td>{{ topic.author }}</td>
-                <td>{{ topic.updateTime }}</td>
-                <td>{{ topic.authorMobile }}</td>
-                <td>{{ topic.authorEmail }}</td>
-                <td>{{ topic.authorWechat }}</td>
-                <td>{{ topic.authorQQ }}</td>
+                <td ng-click="showDetail(technology)"><a>{{ technology.subject }}</a></td>
+                <td>{{ technology.author }}</td>
+                <td>{{ technology.updateTime }}</td>
+                <td>{{ technology.authorMobile }}</td>
+                <td>{{ technology.authorEmail }}</td>
+                <td>{{ technology.authorWechat }}</td>
+                <td>{{ technology.authorQQ }}</td>
             </tr>
             </tbody>
         </table>
@@ -271,7 +271,8 @@
                 {}
         ).success(function (response) {
             $scope.respCode = response.respCode;
-            $scope.topics = response.topics;
+            $scope.tasks = response.tasks;
+            $scope.technologies = response.technologies;
         });
     });
 

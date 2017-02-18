@@ -1,7 +1,7 @@
 package service;
 
 import dao.TopicDao;
-import form.TopicForm;
+import form.PublishForm;
 import model.Topic;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +21,22 @@ public class TopicService {
     @Autowired
     private TopicDao topicDao;
 
-    public Map<String, Object> addTopic(HttpServletRequest request, TopicForm topicForm) {
+    public Map<String, Object> addTopic(HttpServletRequest request, PublishForm publishForm) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
 
         try {
             User user = (User) request.getSession().getAttribute("signInUser");
             String email = user.getEmail();
             Topic topic = new Topic();
-            topic.setSubject(topicForm.getSubject());
-            topic.setDetail(topicForm.getDetail());
+            topic.setSubject(publishForm.getPublishSubject());
+            topic.setDetail(publishForm.getPublishDetail());
             topic.setAuthor(email.substring(0, email.indexOf("@")));
-            topic.setAuthorWechat(topicForm.getAuthorWecha());
-            topic.setAuthorQQ(topicForm.getAuthorQQ());
-            topic.setAuthorEmail(topicForm.getAuthorEmail());
-            topic.setAuthorMobile(topicForm.getAuthorMobile());
+            topic.setAuthorWechat(publishForm.getPublishWechat());
+            topic.setAuthorQQ(publishForm.getPublishQQ());
+            topic.setAuthorEmail(publishForm.getPublishEmail());
+            topic.setAuthorMobile(publishForm.getPublishMobile());
             topic.setAuthorIp(request.getRemoteAddr());
-            topic.setAuthorType(topicForm.getAuthorType());
+            topic.setAuthorType(publishForm.getPublishType());
             topic.setCreateTime(new Date());
             topic.setUpdateTime(new Date());
             topicDao.addTopic(topic);
@@ -55,10 +55,12 @@ public class TopicService {
         Map<String, Object> returnMap = new HashMap<String, Object>();
 
         try {
-            List<Topic> topics = topicDao.findAllTopic();
+            List<Topic> tasks = topicDao.findTopic(1);
+            List<Topic> technologies = topicDao.findTopic(2);
             returnMap.put("respCode", "1000");
             returnMap.put("respMsg", "findTopicSuccess");
-            returnMap.put("topics", topics);
+            returnMap.put("tasks", tasks);
+            returnMap.put("technologies", technologies);
         } catch (Exception e) {
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "findTopicFail");

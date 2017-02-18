@@ -28,29 +28,25 @@
     </servlet-mapping>
 
     <filter>
-        <filter-name>loginFilter</filter-name>
-        <filter-class>filter.SignUpFilter</filter-class>
+        <filter-name>verifyCodeFilter</filter-name>
+        <filter-class>filter.VerifyCodeFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>loginFilter</filter-name>
+        <filter-name>verifyCodeFilter</filter-name>
         <url-pattern>/signin.html</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>verifyCodeFilter</filter-name>
+        <url-pattern>/publish.html</url-pattern>
     </filter-mapping>
 
     <filter>
-        <filter-name>springEncoding</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-        <init-param>
-            <param-name>forceEncoding</param-name>
-            <param-value>true</param-value>
-        </init-param>
+        <filter-name>signInFilter</filter-name>
+        <filter-class>filter.SignInFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>springEncoding</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>signInFilter</filter-name>
+        <url-pattern>/publish.html</url-pattern>
     </filter-mapping>
 
     <welcome-file-list>
