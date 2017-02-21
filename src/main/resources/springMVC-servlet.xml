@@ -20,7 +20,7 @@
     <!-- 配置MultipartResolver用于文件上传-->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
           p:defaultEncoding="UTF-8"
-          p:maxUploadSize="2097152"
+          p:maxUploadSize="4194304"
           p:uploadTempDir="upload"
           p:resolveLazily="true"/>
 </beans>
