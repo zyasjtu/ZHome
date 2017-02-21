@@ -1,9 +1,5 @@
 package service;
 
-import api.FaceApi;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import jni.FaceEngine;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -12,7 +8,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,24 +25,24 @@ import static org.opencv.core.CvType.CV_8UC3;
 @Service
 public class FileService {
     public Map<String, Object> uploadFile(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
-        Map<String, Object> saveFileReturnMap = saveFile(request, file);
+        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" +
+                request.getSession().getId() + file.getOriginalFilename();
+
+        Map<String, Object> saveFileReturnMap = saveFile(path, file);
         if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
             return saveFileReturnMap;
         } else {
             Map<String, Object> returnMap = new HashMap<String, Object>();
             try {
-                String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/";
-                String fileName = file.getOriginalFilename();
                 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
                 System.loadLibrary("FaceEngine");
-                Mat img = Highgui.imread(filePath + fileName);
+                Mat img = Highgui.imread(path);
                 if (img.empty()) {
                     returnMap.put("respCode", "1001");
                     returnMap.put("respMsg", "imageIsEmpty");
                     return returnMap;
                 }
-                int[] facePoints = FaceEngine.detect(img.getNativeObjAddr(),
-                        request.getSession().getServletContext().getRealPath("/"));
+                int[] facePoints = FaceEngine.detect(img.getNativeObjAddr(), "");
                 for (int i = 0; i < facePoints.length; i += 4) {
                     Point pointTL = new Point((double) facePoints[i], (double) facePoints[i + 1]);
                     Point pointBR = new Point((double) (facePoints[i] + facePoints[i + 2]),
@@ -55,8 +50,8 @@ public class FileService {
                     Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
                 }
                 img = resizeImageToSquare(img);
-                Highgui.imwrite(filePath + request.getSession().getId() + fileName, img);
-                response.sendRedirect("upload/" + request.getSession().getId() + fileName);
+                Highgui.imwrite(path, img);
+                response.sendRedirect("upload/" + request.getSession().getId() + file.getOriginalFilename());
                 returnMap.put("respCode", "1000");
                 returnMap.put("respMsg", "success");
             } catch (Exception e) {
@@ -69,9 +64,10 @@ public class FileService {
     }
 
     public Map<String, Object> uploadFiles(HttpServletRequest request, HttpServletResponse response, MultipartFile[] files) {
+        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" + request.getSession().getId();
         Map<String, Object> saveFileReturnMap = new HashMap<String, Object>();
         for (MultipartFile file : files) {
-            saveFileReturnMap = saveFile(request, file);
+            saveFileReturnMap = saveFile(path + file.getOriginalFilename(), file);
             if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
                 return saveFileReturnMap;
             }
@@ -79,20 +75,19 @@ public class FileService {
 
         Map<String, Object> returnMap = new HashMap<String, Object>();
         try {
-            String filePath = request.getSession().getServletContext().getRealPath("/") + "upload/";
-            String fileName1 = files[0].getOriginalFilename();
-            String fileName2 = files[1].getOriginalFilename();
+            String path1 = path + files[0].getOriginalFilename();
+            String path2 = path + files[1].getOriginalFilename();
+
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             System.loadLibrary("FaceEngine");
-            Mat img1 = Highgui.imread(filePath + fileName1);
-            Mat img2 = Highgui.imread(filePath + fileName2);
+            Mat img1 = Highgui.imread(path1);
+            Mat img2 = Highgui.imread(path2);
             if (img1.empty() || img2.empty()) {
                 returnMap.put("respCode", "1001");
                 returnMap.put("respMsg", "imageIsEmpty");
                 return returnMap;
             }
-            double facePoints[] = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(),
-                    request.getSession().getServletContext().getRealPath("/"));
+            double facePoints[] = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(), "");
 
             if (facePoints.length == 29) {
                 for (int i = 0; i < 5; i++) {
@@ -109,10 +104,14 @@ public class FileService {
                 Point pointTL2 = new Point(facePoints[24], facePoints[25]);
                 Point pointBR2 = new Point((facePoints[24] + facePoints[26]), (facePoints[25] + facePoints[27]));
                 Core.rectangle(img2, pointTL2, pointBR2, new Scalar(0, 0, 255), 2);
+                DecimalFormat df = new DecimalFormat("######0.0");
+                String text = String.valueOf(df.format(facePoints[28] * 100)) + "%";
+                Core.putText(img1, text, new Point(pointTL1.x, pointBR1.y - 3), 0, 1, new Scalar(0, 0, 255), 2);
+                Core.putText(img2, text, new Point(pointTL2.x, pointBR2.y - 3), 0, 1, new Scalar(0, 0, 255), 2);
 
-                Mat img = mergeImages(img1, img2, facePoints[28]);
-                Highgui.imwrite(filePath + request.getSession().getId() + fileName1, img);
-                response.sendRedirect("upload/" + request.getSession().getId() + fileName1);
+                Mat img = mergeImages(img1, img2);
+                Highgui.imwrite(path1, img);
+                response.sendRedirect("upload/" + request.getSession().getId() + files[0].getOriginalFilename());
                 returnMap.put("score", facePoints[28]);
                 returnMap.put("respCode", "1000");
                 returnMap.put("respMsg", "success");
@@ -129,67 +128,12 @@ public class FileService {
         return returnMap;
     }
 
-    public Map<String, Object> uploadImage(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
-        Map<String, Object> saveFileReturnMap = saveFile(request, file);
-        if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
-            return saveFileReturnMap;
-        } else {
-            String imagePath = request.getSession().getServletContext().getRealPath("/")
-                    + "upload/" + file.getOriginalFilename();
-            File image = new File(imagePath);
-            byte[] buff = FaceApi.getBytesFromFile(image);
-
-            String url = "https://api-cn.faceplusplus.com/facepp/v3/detect";
-            HashMap<String, String> map = new HashMap<String, String>();
-            HashMap<String, byte[]> byteMap = new HashMap<String, byte[]>();
-            map.put("api_key", "key");
-            map.put("api_secret", "secret");
-            byteMap.put("image_file", buff);
-
-            Map<String, Object> returnMap = new HashMap<String, Object>();
-            try {
-                byte[] bacd = FaceApi.post(url, map, byteMap);
-                String str = new String(bacd);
-                System.out.println(str);
-                Map<String, Object> faceApiReturnMap = JSON.parseObject(str, Map.class);
-                if (StringUtils.isEmpty(faceApiReturnMap.get("error_message"))) {
-                    returnMap.put("respCode", "1000");
-                    returnMap.put("respMsg", "success");
-                    returnMap.put("faces", faceApiReturnMap.get("faces"));
-
-                    JSONArray faces = (JSONArray) faceApiReturnMap.get("faces");
-                    System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-                    Mat img = Highgui.imread(imagePath);
-                    for (int i = 0; i < faces.size(); i++) {
-                        JSONObject face = faces.getJSONObject(i);
-                        Double top = face.getJSONObject("face_rectangle").getDouble("top");
-                        Double left = face.getJSONObject("face_rectangle").getDouble("left");
-                        Double width = face.getJSONObject("face_rectangle").getDouble("width");
-                        Double height = face.getJSONObject("face_rectangle").getDouble("height");
-                        Core.rectangle(img, new Point(left, top), new Point(left + width, top + height), new Scalar(0, 0, 255), 2);
-                    }
-                    Highgui.imwrite(imagePath, img);
-                    response.sendRedirect("upload/" + file.getOriginalFilename());
-                } else {
-                    returnMap.put("respCode", "1001");
-                    returnMap.put("respMsg", faceApiReturnMap.get("error_message"));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return returnMap;
-        }
-    }
-
-    private Map<String, Object> saveFile(HttpServletRequest request, MultipartFile file) {
+    private Map<String, Object> saveFile(String path, MultipartFile file) {
         Map<String, Object> returnMap = new HashMap<String, Object>();
 
         if (!file.isEmpty()) {
             try {
-                String filePath = request.getSession().getServletContext().getRealPath("/")
-                        + "upload/" + file.getOriginalFilename();
-                file.transferTo(new File(filePath));
+                file.transferTo(new File(path));
                 returnMap.put("respCode", "1000");
                 returnMap.put("respMsg", "uploadSuccess");
             } catch (Exception e) {
@@ -225,7 +169,7 @@ public class FileService {
         }
     }
 
-    private Mat mergeImages(Mat src1, Mat src2, double score) {
+    private Mat mergeImages(Mat src1, Mat src2) {
         int width1 = src1.width();
         int height1 = src1.height();
         int width2 = src2.width();
@@ -236,10 +180,6 @@ public class FileService {
         src1.copyTo(dst.submat(roi));
         roi = new Rect(width1, 0, width2, height2);
         src2.copyTo(dst.submat(roi));
-
-        DecimalFormat df = new DecimalFormat("######0.00");
-        String text = String.valueOf(df.format(score * 100)) + "%";
-        Core.putText(dst, text, new Point(width1, dst.height()), 0, 1.5, new Scalar(0, 0, 255), 2);
 
         return dst;
     }

@@ -20,13 +20,13 @@ public class TopicDao {
     }
 
     public List<Topic> findAllTopic() {
-        final String hql = "FROM Topic WHERE 1=1";
+        final String hql = "FROM Topic WHERE 1=1 ORDER BY updateTime DESC";
         List<Topic> topics = (List<Topic>) hibernateTemplate.find(hql);
         return topics;
     }
 
     public List<Topic> findTopic(Integer authorType) {
-        final String hql = "FROM Topic WHERE authorType = ?";
+        final String hql = "FROM Topic WHERE authorType = ? ORDER BY updateTime DESC";
         List<Topic> topics = (List<Topic>) hibernateTemplate.find(hql, new Object[]{authorType});
         return topics;
     }
