@@ -56,6 +56,22 @@ public class FileController {
         return JSON.toJSONString(returnMap);
     }
 
+    @RequestMapping("/uploadImage.json")
+    @ResponseBody
+    public String uploadImage(HttpServletRequest request, HttpServletResponse response,
+                              @RequestParam("file") MultipartFile file) {
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+
+        if (null == file) {
+            returnMap.put("respCode", "1001");
+            returnMap.put("respMsg", "invalidParameter");
+        } else {
+            returnMap = fileService.uploadImage(request, response, file);
+        }
+
+        return JSON.toJSONString(returnMap);
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex, HttpServletRequest request) {
         if (ex instanceof org.springframework.web.multipart.MaxUploadSizeExceededException) {

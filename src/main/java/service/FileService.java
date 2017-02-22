@@ -1,6 +1,7 @@
 package service;
 
 import jni.FaceEngine;
+import jni.VehicleEngine;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -49,7 +50,7 @@ public class FileService {
                             (double) (facePoints[i + 1] + facePoints[i + 3]));
                     Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
                 }
-                img = resizeImageToSquare(img);
+                //img = resizeImageToSquare(img);
                 Highgui.imwrite(path, img);
                 response.sendRedirect("upload/" + request.getSession().getId() + file.getOriginalFilename());
                 returnMap.put("respCode", "1000");
@@ -57,7 +58,7 @@ public class FileService {
             } catch (Exception e) {
                 e.printStackTrace();
                 returnMap.put("respCode", "1001");
-                returnMap.put("respMsg", "detect face fail");
+                returnMap.put("respMsg", "detectFaceFail");
             }
             return returnMap;
         }
@@ -87,7 +88,7 @@ public class FileService {
                 returnMap.put("respMsg", "imageIsEmpty");
                 return returnMap;
             }
-            double facePoints[] = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(), "");
+            double[] facePoints = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(), "");
 
             if (facePoints.length == 29) {
                 for (int i = 0; i < 5; i++) {
@@ -126,6 +127,44 @@ public class FileService {
             returnMap.put("respMsg", "identify face fail");
         }
         return returnMap;
+    }
+
+    public Map<String, Object> uploadImage(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
+        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" +
+                request.getSession().getId() + file.getOriginalFilename();
+
+        Map<String, Object> saveFileReturnMap = saveFile(path, file);
+        if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
+            return saveFileReturnMap;
+        } else {
+            Map<String, Object> returnMap = new HashMap<String, Object>();
+            try {
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                System.loadLibrary("VehicleEngine");
+                Mat img = Highgui.imread(path);
+                if (img.empty()) {
+                    returnMap.put("respCode", "1001");
+                    returnMap.put("respMsg", "imageIsEmpty");
+                    return returnMap;
+                }
+                double[] vehiclePoints = VehicleEngine.detectPlate(img.getNativeObjAddr());
+                for (int i = 0; i < vehiclePoints.length; i += 4) {
+                    Point pointTL = new Point(vehiclePoints[i], vehiclePoints[i + 1]);
+                    Point pointBR = new Point(vehiclePoints[i] + vehiclePoints[i + 2], vehiclePoints[i + 1] + vehiclePoints[i + 3]);
+                    Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
+                }
+                //img = resizeImageToSquare(img);
+                Highgui.imwrite(path, img);
+                response.sendRedirect("upload/" + request.getSession().getId() + file.getOriginalFilename());
+                returnMap.put("respCode", "1000");
+                returnMap.put("respMsg", "success");
+            } catch (Exception e) {
+                e.printStackTrace();
+                returnMap.put("respCode", "1001");
+                returnMap.put("respMsg", "detectVehicle/PlateFail");
+            }
+            return returnMap;
+        }
     }
 
     private Map<String, Object> saveFile(String path, MultipartFile file) {
