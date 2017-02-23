@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,67 +27,63 @@ import static org.opencv.core.CvType.CV_8UC3;
 @Service
 public class FileService {
     public Map<String, Object> uploadFile(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
-        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" +
-                request.getSession().getId() + file.getOriginalFilename();
-
-        Map<String, Object> saveFileReturnMap = saveFile(path, file);
-        if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
-            return saveFileReturnMap;
-        } else {
-            Map<String, Object> returnMap = new HashMap<String, Object>();
-            try {
-                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-                System.loadLibrary("FaceEngine");
-                Mat img = Highgui.imread(path);
-                if (img.empty()) {
-                    returnMap.put("respCode", "1001");
-                    returnMap.put("respMsg", "imageIsEmpty");
-                    return returnMap;
-                }
-                int[] facePoints = FaceEngine.detect(img.getNativeObjAddr(), "");
-                for (int i = 0; i < facePoints.length; i += 4) {
-                    Point pointTL = new Point((double) facePoints[i], (double) facePoints[i + 1]);
-                    Point pointBR = new Point((double) (facePoints[i] + facePoints[i + 2]),
-                            (double) (facePoints[i + 1] + facePoints[i + 3]));
-                    Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
-                }
-                //img = resizeImageToSquare(img);
-                Highgui.imwrite(path, img);
-                response.sendRedirect("upload/" + request.getSession().getId() + file.getOriginalFilename());
-                returnMap.put("respCode", "1000");
-                returnMap.put("respMsg", "success");
-            } catch (Exception e) {
-                e.printStackTrace();
-                returnMap.put("respCode", "1001");
-                returnMap.put("respMsg", "detectFaceFail");
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        String bathPath = request.getSession().getServletContext().getRealPath("/");
+        String fileName = request.getSession().getId() + file.getOriginalFilename();
+        String fullPath = bathPath + "upload/" + fileName;
+        try {
+            saveFile(fullPath, file);
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            System.loadLibrary("FaceEngine");
+            Mat img = Highgui.imread(fullPath);
+            if (img.empty()) {
+                img = Highgui.imread(bathPath + "static/faceDetect.jpg");
+                fileName += "faceDetect.jpg";
+                fullPath += "faceDetect.jpg";
             }
-            return returnMap;
+            int[] facePoints = FaceEngine.detect(img.getNativeObjAddr(), "");
+            for (int i = 0; i < facePoints.length; i += 4) {
+                Point pointTL = new Point((double) facePoints[i], (double) facePoints[i + 1]);
+                Point pointBR = new Point((double) (facePoints[i] + facePoints[i + 2]),
+                        (double) (facePoints[i + 1] + facePoints[i + 3]));
+                Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
+            }
+            //img = resizeImageToSquare(img);
+            Highgui.imwrite(fullPath, img);
+            response.sendRedirect("upload/" + fileName);
+            returnMap.put("respCode", "1000");
+            returnMap.put("respMsg", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnMap.put("respCode", "1001");
+            returnMap.put("respMsg", "detectFaceFail");
         }
+        return returnMap;
     }
 
     public Map<String, Object> uploadFiles(HttpServletRequest request, HttpServletResponse response, MultipartFile[] files) {
-        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" + request.getSession().getId();
-        Map<String, Object> saveFileReturnMap = new HashMap<String, Object>();
-        for (MultipartFile file : files) {
-            saveFileReturnMap = saveFile(path + file.getOriginalFilename(), file);
-            if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
-                return saveFileReturnMap;
-            }
-        }
-
         Map<String, Object> returnMap = new HashMap<String, Object>();
+        String bathPath = request.getSession().getServletContext().getRealPath("/");
+        String fileName1 = request.getSession().getId() + (files.length == 2 ? files[0].getOriginalFilename() : "");
+        String fileName2 = request.getSession().getId() + (files.length == 2 ? files[1].getOriginalFilename() : "");
+        String fullPath1 = bathPath + "upload/" + fileName1;
+        String fullPath2 = bathPath + "upload/" + fileName2;
         try {
-            String path1 = path + files[0].getOriginalFilename();
-            String path2 = path + files[1].getOriginalFilename();
-
+            if (files.length == 2) {
+                saveFile(fullPath1, files[0]);
+                saveFile(fullPath2, files[1]);
+            }
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
             System.loadLibrary("FaceEngine");
-            Mat img1 = Highgui.imread(path1);
-            Mat img2 = Highgui.imread(path2);
+            Mat img1 = Highgui.imread(fullPath1);
+            Mat img2 = Highgui.imread(fullPath2);
             if (img1.empty() || img2.empty()) {
-                returnMap.put("respCode", "1001");
-                returnMap.put("respMsg", "imageIsEmpty");
-                return returnMap;
+                img1 = Highgui.imread(bathPath + "static/faceVerify1.jpg");
+                fileName1 += "faceVerify1.jpg";
+                fullPath1 += "faceVerify1.jpg";
+                img2 = Highgui.imread(bathPath + "static/faceVerify2.jpg");
+                fileName2 += "faceVerify2.jpg";
+                fullPath2 += "faceVerify2.jpg";
             }
             double[] facePoints = FaceEngine.identification(img1.getNativeObjAddr(), img2.getNativeObjAddr(), "");
 
@@ -111,8 +108,8 @@ public class FileService {
                 Core.putText(img2, text, new Point(pointTL2.x, pointBR2.y - 3), 0, 1, new Scalar(0, 0, 255), 2);
 
                 Mat img = mergeImages(img1, img2);
-                Highgui.imwrite(path1, img);
-                response.sendRedirect("upload/" + request.getSession().getId() + files[0].getOriginalFilename());
+                Highgui.imwrite(fullPath1, img);
+                response.sendRedirect("upload/" + fileName1);
                 returnMap.put("score", facePoints[28]);
                 returnMap.put("respCode", "1000");
                 returnMap.put("respMsg", "success");
@@ -130,62 +127,44 @@ public class FileService {
     }
 
     public Map<String, Object> uploadImage(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
-        String path = request.getSession().getServletContext().getRealPath("/") + "upload/" +
-                request.getSession().getId() + file.getOriginalFilename();
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        String bathPath = request.getSession().getServletContext().getRealPath("/");
+        String fileName = request.getSession().getId() + file.getOriginalFilename();
+        String fullPath = bathPath + "upload/" + fileName;
 
-        Map<String, Object> saveFileReturnMap = saveFile(path, file);
-        if (!"1000".equals(saveFileReturnMap.get("respCode"))) {
-            return saveFileReturnMap;
-        } else {
-            Map<String, Object> returnMap = new HashMap<String, Object>();
-            try {
-                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-                System.loadLibrary("VehicleEngine");
-                Mat img = Highgui.imread(path);
-                if (img.empty()) {
-                    returnMap.put("respCode", "1001");
-                    returnMap.put("respMsg", "imageIsEmpty");
-                    return returnMap;
-                }
-                double[] vehiclePoints = VehicleEngine.detectPlate(img.getNativeObjAddr());
-                for (int i = 0; i < vehiclePoints.length; i += 4) {
-                    Point pointTL = new Point(vehiclePoints[i], vehiclePoints[i + 1]);
-                    Point pointBR = new Point(vehiclePoints[i] + vehiclePoints[i + 2], vehiclePoints[i + 1] + vehiclePoints[i + 3]);
-                    Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
-                }
-                //img = resizeImageToSquare(img);
-                Highgui.imwrite(path, img);
-                response.sendRedirect("upload/" + request.getSession().getId() + file.getOriginalFilename());
-                returnMap.put("respCode", "1000");
-                returnMap.put("respMsg", "success");
-            } catch (Exception e) {
-                e.printStackTrace();
-                returnMap.put("respCode", "1001");
-                returnMap.put("respMsg", "detectVehicle/PlateFail");
+        try {
+            saveFile(fullPath, file);
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            System.loadLibrary("VehicleEngine");
+            Mat img = Highgui.imread(fullPath);
+            if (img.empty()) {
+                img = Highgui.imread(bathPath + "static/plateDetect.jpg");
+                fileName += "plateDetect.jpg";
+                fullPath += "plateDetect.jpg";
             }
-            return returnMap;
+            double[] vehiclePoints = VehicleEngine.detectPlate(img.getNativeObjAddr());
+            for (int i = 0; i < vehiclePoints.length; i += 4) {
+                Point pointTL = new Point(vehiclePoints[i], vehiclePoints[i + 1]);
+                Point pointBR = new Point(vehiclePoints[i] + vehiclePoints[i + 2], vehiclePoints[i + 1] + vehiclePoints[i + 3]);
+                Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
+            }
+            //img = resizeImageToSquare(img);
+            Highgui.imwrite(fullPath, img);
+            response.sendRedirect("upload/" + fileName);
+            returnMap.put("respCode", "1000");
+            returnMap.put("respMsg", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnMap.put("respCode", "1001");
+            returnMap.put("respMsg", "detectVehicle/PlateFail");
         }
+        return returnMap;
     }
 
-    private Map<String, Object> saveFile(String path, MultipartFile file) {
-        Map<String, Object> returnMap = new HashMap<String, Object>();
-
+    private void saveFile(String path, MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
-            try {
-                file.transferTo(new File(path));
-                returnMap.put("respCode", "1000");
-                returnMap.put("respMsg", "uploadSuccess");
-            } catch (Exception e) {
-                e.printStackTrace();
-                returnMap.put("respCode", "1001");
-                returnMap.put("respMsg", "uploadFail");
-            }
-        } else {
-            returnMap.put("respCode", "1000");
-            returnMap.put("respMsg", "uploadSuccess");
+            file.transferTo(new File(path));
         }
-
-        return returnMap;
     }
 
     private Mat resizeImageToSquare(Mat img) {
