@@ -143,9 +143,9 @@ public class FileService {
                 fullPath += "plateDetect.jpg";
             }
             double[] vehiclePoints = VehicleEngine.detectPlate(img.getNativeObjAddr());
-            for (int i = 0; i < vehiclePoints.length; i += 4) {
+            for (int i = 0; i < vehiclePoints.length; i += 5) {
                 Point pointTL = new Point(vehiclePoints[i], vehiclePoints[i + 1]);
-                Point pointBR = new Point(vehiclePoints[i] + vehiclePoints[i + 2], vehiclePoints[i + 1] + vehiclePoints[i + 3]);
+                Point pointBR = new Point(vehiclePoints[i + 2], vehiclePoints[i + 3]);
                 Core.rectangle(img, pointTL, pointBR, new Scalar(0, 0, 255), 2);
             }
             //img = resizeImageToSquare(img);

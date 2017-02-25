@@ -48,6 +48,18 @@
         <filter-name>signInFilter</filter-name>
         <url-pattern>/publish.html</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>signInFilter</filter-name>
+        <url-pattern>/uploadFile.json</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>signInFilter</filter-name>
+        <url-pattern>/uploadFiles.json</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>signInFilter</filter-name>
+        <url-pattern>/uploadImage.json</url-pattern>
+    </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
