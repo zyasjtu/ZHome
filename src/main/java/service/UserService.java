@@ -4,6 +4,7 @@ import dao.UserDao;
 import form.SignInForm;
 import form.SignUpForm;
 import model.User;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import util.RSAUtil;
@@ -20,6 +21,7 @@ import java.util.Map;
  */
 @Service
 public class UserService {
+    private static final Logger LOGGER = Logger.getLogger(UserService.class);
     @Autowired
     private UserDao userDao;
 
@@ -40,6 +42,7 @@ public class UserService {
                 request.getSession().setAttribute("signInUser", users.get(0));
             }
         } catch (Exception e) {
+            LOGGER.error("signInFail", e);
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "signInFail");
             request.getSession().setAttribute("signInUser", null);
@@ -64,6 +67,7 @@ public class UserService {
             returnMap.put("respMsg", "signUpSuccess");
             request.getSession().setAttribute("signInUser", user);
         } catch (Exception e) {
+            LOGGER.error("signUpFail", e);
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "signUpFail");
             request.getSession().setAttribute("signInUser", null);
@@ -79,6 +83,7 @@ public class UserService {
             returnMap.put("respMsg", "verifyCodeSuccess");
             request.getSession().setAttribute("verifyCode", verifyCode);
         } catch (Exception e) {
+            LOGGER.error("verifyCodeFail", e);
             returnMap.put("respCode", "1001");
             returnMap.put("respMsg", "verifyCodeFail");
             request.getSession().setAttribute("verifyCode", null);

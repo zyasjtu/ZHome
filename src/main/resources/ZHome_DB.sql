@@ -1,4 +1,4 @@
-CREATE TABLE zhome_db.ZHome_User
+CREATE TABLE ZHome_DB.ZHome_User
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     email NVARCHAR(64) NOT NULL,
@@ -7,9 +7,9 @@ CREATE TABLE zhome_db.ZHome_User
     updateTime DATETIME NOT NULL
 );
 
-CREATE UNIQUE INDEX zhome_user_name_uindex ON zhome_db.zhome_user (email);
+CREATE UNIQUE INDEX ZHome_User_Name_UIndex ON ZHome_DB.ZHome_User (email);
 
-CREATE TABLE zhome_db.ZHome_Message
+CREATE TABLE ZHome_DB.ZHome_Message
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     creator NVARCHAR(64) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE zhome_db.ZHome_Message
     imageUrl NVARCHAR(64) DEFAULT NULL
 );
 
-CREATE TABLE zhome_db.ZHome_Comment
+CREATE TABLE ZHome_DB.ZHome_Comment
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     creator NVARCHAR(64) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE zhome_db.ZHome_Comment
     messageId BIGINT NOT NULL
 );
 
-CREATE TABLE zhome_db.zhome_topic
+CREATE TABLE ZHome_DB.ZHome_Topic
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     subject VARCHAR(64) NOT NULL,
