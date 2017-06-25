@@ -4,13 +4,16 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:c="http://www.springframework.org/schema/c"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/rabbit
+       http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
 
     <context:component-scan base-package="dao"/>
     <context:component-scan base-package="service"/>
@@ -96,4 +99,27 @@
           destroy-method="shutdown">
         <constructor-arg index="0" ref="httpClientConnectionManager" />
     </bean>
+
+    <!--rabbitmq连接服务器配置-->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" port="${rabbitmq.port}"
+                               username="${rabbitmq.username}" password="${rabbitmq.password}"/>
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <!--rabbitmq队列声明-->
+    <rabbit:queue id="queue_one" durable="true" auto-delete="false" exclusive="false" name="queue_one"/>
+    <!--rabbitmq exchange-->
+    <rabbit:direct-exchange name="my-mq-exchange" durable="true" auto-delete="false" id="my-mq-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="queue_one" key="queue_one_key"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!--rabbitmq template-->
+    <rabbit:template exchange="my-mq-exchange" id="amqpTemplate" connection-factory="connectionFactory"/>
+
+    <!--rabbitmq message listener-->
+    <bean id="messageConsumer" class="message.MessageConsumer"/>
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="auto">
+        <rabbit:listener queues="queue_one" ref="messageConsumer"/>
+    </rabbit:listener-container>
 </beans>
